@@ -1,0 +1,42 @@
+/* ==========================================================
+   responsive.css — breakpoint refinements
+   Mobile-first base lives in style.css; this file adjusts
+   spacing/type at larger viewports only.
+   ========================================================== */
+
+/* Small phones */
+@media (max-width: 360px) {
+  .countdown { gap: 6px; }
+  .countdown-unit { padding: 10px 8px; min-width: 58px; }
+  .festival-greeting { font-size: 1.9rem; }
+}
+
+/* Tablets */
+@media (min-width: 640px) {
+  main { padding-top: 40px; }
+  .hero { padding: 32px 16px 40px; }
+  .controls { padding: 18px 22px; }
+}
+
+/* Laptops / desktop */
+@media (min-width: 1024px) {
+  main { max-width: 860px; }
+  .festival-greeting { font-size: 3.6rem; }
+  .countdown-unit { padding: 20px 30px; }
+  .diya-svg { width: 108px; height: 108px; }
+}
+
+/* Large / ultra-wide monitors: cap content width, let the
+   background breathe instead of stretching the card layout. */
+@media (min-width: 1600px) {
+  main { max-width: 960px; }
+}
+
+/* Landscape phones: keep the countdown from pushing controls
+   off-screen without scrolling. */
+@media (max-height: 480px) and (orientation: landscape) {
+  .hero { padding: 12px 16px; }
+  .festival-greeting { font-size: 1.8rem; margin-bottom: 4px; }
+  .rotating-message { margin-bottom: 14px; }
+  .puja-timeline, .section-heading { display: none; }
+}

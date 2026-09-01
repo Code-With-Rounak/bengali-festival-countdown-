@@ -1,0 +1,426 @@
+/* ==========================================================
+   style.css — Bengali Festival Countdown
+   Design tokens set per-festival via CSS custom properties in
+   theme.js (applyColors). Values below are the Durga Puja
+   defaults, overwritten at runtime.
+   ========================================================== */
+
+@font-face {
+  font-family: "Baloo Bengali";
+  /* Self-host a licensed Bengali display font here for production.
+     See README.md "Replacing fonts". Until then this rule is
+     harmless — the browser falls through to the system stack below. */
+  src: local("Baloo Da 2"), local("Hind Siliguri");
+  font-display: swap;
+}
+
+:root {
+  --color-primary: #7a1f2b;
+  --color-secondary: #d4af37;
+  --color-accent: #e8743b;
+  --color-surface: #fbeedd;
+  --color-glow: rgba(232, 116, 59, 0.45);
+
+  --font-display: "Baloo Bengali", "Hind Siliguri", "Noto Sans Bengali", "Kohinoor Bangla", sans-serif;
+  --font-body: "Hind Siliguri", "Noto Sans Bengali", "Kohinoor Bangla", sans-serif;
+
+  --radius-lg: 24px;
+  --radius-md: 16px;
+  --transition-slow: 900ms cubic-bezier(0.22, 1, 0.36, 1);
+  --transition-fast: 220ms ease;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: var(--font-body);
+  color: #fff;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  position: relative;
+  background: #1a0f0f;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  top: -60px;
+  left: 12px;
+  background: #fff;
+  color: #111;
+  padding: 10px 16px;
+  border-radius: 8px;
+  z-index: 1000;
+  transition: top var(--transition-fast);
+}
+.skip-link:focus { top: 12px; }
+
+:focus-visible {
+  outline: 3px solid var(--color-secondary);
+  outline-offset: 3px;
+}
+
+/* ---------- Background stage ---------- */
+.bg-stage {
+  position: fixed;
+  inset: 0;
+  z-index: -3;
+  overflow: hidden;
+}
+.bg-layer {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transition: opacity var(--transition-slow);
+  will-change: opacity;
+}
+#bg-layer-a { opacity: 1; }
+
+/* Gradient fallbacks per festival + time period. These render the
+   scene until/unless a real photo exists at the matching path in
+   /assets/images/<festival>/<period>.webp — see README. */
+.bg-layer[data-festival="durga"][data-period="morning"]   { background-image: radial-gradient(circle at 30% 20%, #ffd9a0, transparent 55%), linear-gradient(160deg, #f7dcb0 0%, #e8a06a 45%, #7a1f2b 100%); }
+.bg-layer[data-festival="durga"][data-period="afternoon"] { background-image: linear-gradient(160deg, #ffe9c2 0%, #e8743b 50%, #7a1f2b 100%); }
+.bg-layer[data-festival="durga"][data-period="evening"]   { background-image: radial-gradient(circle at 70% 30%, #ffb066, transparent 60%), linear-gradient(160deg, #d4713f 0%, #a8332f 55%, #4a1220 100%); }
+.bg-layer[data-festival="durga"][data-period="night"]     { background-image: radial-gradient(circle at 80% 15%, rgba(212,175,55,0.35), transparent 45%), linear-gradient(180deg, #2a0f16 0%, #3d1420 55%, #160810 100%); }
+
+.bg-layer[data-festival="lakshmi"][data-period="morning"]   { background-image: radial-gradient(circle at 25% 20%, #fff3d0, transparent 55%), linear-gradient(160deg, #fff3d6 0%, #f2c46b 50%, #b33a3a 100%); }
+.bg-layer[data-festival="lakshmi"][data-period="afternoon"] { background-image: linear-gradient(160deg, #fff0d0 0%, #e8c468 50%, #b33a3a 100%); }
+.bg-layer[data-festival="lakshmi"][data-period="evening"]   { background-image: radial-gradient(circle at 70% 25%, #ffcf8a, transparent 60%), linear-gradient(160deg, #e88aa0 0%, #b33a3a 55%, #4a1420 100%); }
+.bg-layer[data-festival="lakshmi"][data-period="night"]     { background-image: radial-gradient(circle at 50% 20%, rgba(232,196,104,0.4), transparent 50%), linear-gradient(180deg, #2a1018 0%, #3a1420 55%, #150810 100%); }
+
+.bg-layer[data-festival="kali"][data-period="morning"]   { background-image: radial-gradient(circle at 30% 20%, #cbb8ff, transparent 55%), linear-gradient(160deg, #4a2b6b 0%, #2a1840 55%, #0d0714 100%); }
+.bg-layer[data-festival="kali"][data-period="afternoon"] { background-image: linear-gradient(160deg, #5b3a80 0%, #2a1840 55%, #0d0714 100%); }
+.bg-layer[data-festival="kali"][data-period="evening"]   { background-image: radial-gradient(circle at 70% 25%, #8c1c3a, transparent 55%), linear-gradient(160deg, #3a1c50 0%, #1b1035 55%, #0d0714 100%); }
+.bg-layer[data-festival="kali"][data-period="night"]     { background-image: radial-gradient(circle at 60% 15%, rgba(201,162,39,0.3), transparent 45%), linear-gradient(180deg, #0d0714 0%, #150a20 60%, #05030a 100%); }
+
+.bg-layer[data-festival="jagaddhatri"][data-period="morning"]   { background-image: radial-gradient(circle at 30% 20%, #ffd9a0, transparent 55%), linear-gradient(160deg, #ffe3b0 0%, #ff7f3f 50%, #6b2f14 100%); }
+.bg-layer[data-festival="jagaddhatri"][data-period="afternoon"] { background-image: linear-gradient(160deg, #ffe9c2 0%, #f2c14e 45%, #6b2f14 100%); }
+.bg-layer[data-festival="jagaddhatri"][data-period="evening"]   { background-image: radial-gradient(circle at 70% 25%, #ffb066, transparent 60%), linear-gradient(160deg, #d4713f 0%, #8a3a1c 55%, #3a1608 100%); }
+.bg-layer[data-festival="jagaddhatri"][data-period="night"]     { background-image: radial-gradient(circle at 75% 15%, rgba(242,193,78,0.35), transparent 45%), linear-gradient(180deg, #2a140a 0%, #3a1c0e 55%, #160a05 100%); }
+
+.bg-layer[data-festival="saraswati"][data-period="morning"]   { background-image: radial-gradient(circle at 30% 20%, #fff6db, transparent 55%), linear-gradient(160deg, #fff6db 0%, #fef3c7 40%, #c98a1a 100%); }
+.bg-layer[data-festival="saraswati"][data-period="afternoon"] { background-image: linear-gradient(160deg, #fffaf0 0%, #fef3c7 45%, #c98a1a 100%); }
+.bg-layer[data-festival="saraswati"][data-period="evening"]   { background-image: radial-gradient(circle at 70% 25%, #ffe7a8, transparent 60%), linear-gradient(160deg, #e8c468 0%, #c98a1a 55%, #6b4a10 100%); }
+.bg-layer[data-festival="saraswati"][data-period="night"]     { background-image: radial-gradient(circle at 55% 20%, rgba(127,184,189,0.35), transparent 50%), linear-gradient(180deg, #1c1808 0%, #2a2410 55%, #100d05 100%); }
+
+.bg-layer[data-festival="pohela-boishakh"][data-period="morning"]   { background-image: radial-gradient(circle at 30% 20%, #fff0e0, transparent 55%), linear-gradient(160deg, #fdf6ec 0%, #f2a65a 45%, #b91c1c 100%); }
+.bg-layer[data-festival="pohela-boishakh"][data-period="afternoon"] { background-image: linear-gradient(160deg, #fff3e6 0%, #2f9e44 55%, #b91c1c 100%); }
+.bg-layer[data-festival="pohela-boishakh"][data-period="evening"]   { background-image: radial-gradient(circle at 70% 25%, #ffcf8a, transparent 60%), linear-gradient(160deg, #e0703f 0%, #b91c1c 55%, #4a0f0f 100%); }
+.bg-layer[data-festival="pohela-boishakh"][data-period="night"]     { background-image: radial-gradient(circle at 60% 15%, rgba(47,158,68,0.3), transparent 45%), linear-gradient(180deg, #2a0a0a 0%, #3a1010 55%, #150505 100%); }
+
+.bg-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.55) 100%);
+}
+
+#effects-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+}
+
+/* ---------- Layout ---------- */
+.site-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: max(16px, env(safe-area-inset-top)) 20px 8px;
+  gap: 12px;
+}
+
+.bengali-date {
+  font-size: 0.85rem;
+  opacity: 0.85;
+  margin: 0;
+}
+
+.status-pill {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.14);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.25);
+}
+.status-pill[data-state="live"] { background: var(--color-accent); }
+.status-pill[data-state="mahalaya"] { background: var(--color-secondary); color: #1a0f0f; }
+
+main {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px 20px 48px;
+}
+
+.hero {
+  text-align: center;
+  padding: 24px 16px 32px;
+}
+
+.festival-greeting {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 8vw, 3.4rem);
+  margin: 0 0 8px;
+  text-shadow: 0 4px 24px rgba(0,0,0,0.4);
+  letter-spacing: 0.5px;
+}
+
+.rotating-message {
+  font-size: clamp(1rem, 3.6vw, 1.25rem);
+  opacity: 0.92;
+  min-height: 1.6em;
+  transition: opacity 400ms ease;
+  margin: 0 0 28px;
+}
+
+/* ---------- Countdown ---------- */
+.countdown {
+  display: flex;
+  justify-content: center;
+  gap: clamp(8px, 3vw, 18px);
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.countdown-unit {
+  background: rgba(255,255,255,0.12);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,0.22);
+  border-radius: var(--radius-md);
+  padding: 14px clamp(10px, 3vw, 22px);
+  min-width: 68px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+}
+
+.countdown-value {
+  display: block;
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 7vw, 2.6rem);
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.countdown-value.digit-pulse {
+  animation: digitPulse 320ms ease;
+}
+@keyframes digitPulse {
+  0% { transform: scale(1.15); opacity: 0.6; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.countdown-label {
+  display: block;
+  font-size: 0.72rem;
+  opacity: 0.8;
+  margin-top: 4px;
+}
+
+/* ---------- Progress bar ---------- */
+.progress-wrap { max-width: 440px; margin: 0 auto; }
+.progress-label {
+  font-size: 0.85rem;
+  opacity: 0.85;
+  margin: 0 0 8px;
+}
+.progress-track {
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.15);
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--color-secondary), var(--color-accent));
+  border-radius: 999px;
+  transition: width 900ms ease;
+}
+
+/* ---------- Timeline ---------- */
+.section-heading {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  text-align: center;
+  margin: 40px 0 16px;
+}
+
+.puja-timeline {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.timeline-step {
+  font-size: 0.8rem;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.18);
+  opacity: 0.65;
+}
+.timeline-step.timeline-past { opacity: 0.4; text-decoration: line-through; }
+.timeline-step.timeline-today {
+  opacity: 1;
+  background: var(--color-accent);
+  border-color: transparent;
+  box-shadow: 0 0 0 4px var(--color-glow);
+  font-weight: 700;
+}
+
+/* ---------- Diya ---------- */
+.diya-section {
+  display: flex;
+  justify-content: center;
+  margin: 40px 0;
+}
+
+.diya {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px;
+  color: inherit;
+}
+
+.diya-svg { width: 92px; height: 92px; }
+
+.diya-flame {
+  transform-origin: 50% 58%;
+  transition: transform var(--transition-fast), filter var(--transition-fast);
+}
+
+.diya.diya-lit .diya-flame,
+.diya:hover .diya-flame,
+.diya:focus-visible .diya-flame {
+  transform: scale(1.25);
+  filter: drop-shadow(0 0 14px var(--color-glow));
+}
+
+.diya-hint {
+  font-size: 0.72rem;
+  opacity: 0.7;
+}
+
+/* ---------- Controls ---------- */
+.controls-section { display: flex; justify-content: center; }
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.16);
+  border-radius: var(--radius-lg);
+  padding: 14px;
+  backdrop-filter: blur(12px);
+}
+
+.control-btn {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: #fff;
+  background: rgba(255,255,255,0.14);
+  border: 1px solid rgba(255,255,255,0.24);
+  border-radius: 999px;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: background var(--transition-fast), transform var(--transition-fast);
+}
+.control-btn:hover { background: rgba(255,255,255,0.24); }
+.control-btn:active { transform: scale(0.97); }
+.control-btn[aria-pressed="true"] {
+  background: var(--color-accent);
+  border-color: transparent;
+}
+.control-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.volume-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+}
+.volume-label input[type="range"] { accent-color: var(--color-accent); }
+
+/* ---------- Puja mode ---------- */
+body.puja-mode .bg-scrim { background: linear-gradient(180deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.72) 100%); }
+body.puja-mode .diya-svg { filter: drop-shadow(0 0 10px var(--color-glow)); }
+
+/* ---------- Festival transition overlay ---------- */
+.transition-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 4, 8, 0.92);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 400ms ease;
+}
+.transition-overlay.transition-active {
+  opacity: 1;
+  pointer-events: auto;
+  animation: overlayHold 2200ms ease forwards;
+}
+@keyframes overlayHold {
+  0% { opacity: 0; }
+  15% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { opacity: 0; }
+}
+#transition-text {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 6vw, 2.2rem);
+  text-align: center;
+  padding: 0 24px;
+}
+
+.site-footer {
+  text-align: center;
+  font-size: 0.75rem;
+  opacity: 0.6;
+  padding: 24px;
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .bg-layer, .progress-fill, .transition-overlay, .diya-flame, .control-btn, .skip-link {
+    transition: none !important;
+    animation: none !important;
+  }
+  .countdown-value.digit-pulse { animation: none; }
+}
