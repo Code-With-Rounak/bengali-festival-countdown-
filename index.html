@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>মা আসছেন — Bengali Festival Countdown</title>
+<meta name="description" content="দুর্গাপূজা, লক্ষ্মীপূজা ও কালীপূজার জন্য একটি সুন্দর কাউন্টডাউন।" />
+<meta name="theme-color" content="#7a1f2b" />
+<link rel="manifest" href="manifest.webmanifest" />
+<link rel="icon" href="icons/icon-192.png" />
+<!--
+  Recommended response headers (set at your host / CDN, not in HTML):
+  Content-Security-Policy: default-src 'self'; img-src 'self' data:; media-src 'self';
+    style-src 'self'; font-src 'self'; script-src 'self'; connect-src 'self';
+    object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none';
+  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), camera=(), microphone=()
+  See README.md §Security for full deployment notes.
+-->
+<link rel="stylesheet" href="css/style.css" />
+<link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body data-festival="durga" data-period="morning">
+
+  <!-- Screen-reader live region for status/festival-change announcements -->
+  <div id="sr-live-region" class="sr-only" aria-live="polite"></div>
+
+  <!-- Background crossfade layers (behind everything) -->
+  <div class="bg-stage" aria-hidden="true">
+    <div id="bg-layer-a" class="bg-layer"></div>
+    <div id="bg-layer-b" class="bg-layer"></div>
+    <div class="bg-scrim"></div>
+  </div>
+
+  <!-- Ambient particle canvas -->
+  <canvas id="effects-canvas" aria-hidden="true"></canvas>
+
+  <!-- Festival transition overlay -->
+  <div id="transition-overlay" class="transition-overlay" aria-hidden="true">
+    <p id="transition-text"></p>
+  </div>
+
+  <a class="skip-link" href="#main">মূল বিষয়বস্তুতে যান</a>
+
+  <header class="site-header">
+    <p id="bengali-date" class="bengali-date"></p>
+    <span id="status-pill" class="status-pill" data-state="upcoming">অপেক্ষা চলছে</span>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="festival-greeting">
+      <h1 id="festival-greeting" class="festival-greeting">শুভ শারদীয়া</h1>
+      <p id="rotating-message" class="rotating-message" role="status">মা আসছেন...</p>
+
+      <div class="countdown" role="timer" aria-label="উৎসব পর্যন্ত বাকি সময়">
+        <div class="countdown-unit">
+          <span id="cd-days" class="countdown-value">00</span>
+          <span class="countdown-label">দিন</span>
+        </div>
+        <div class="countdown-unit">
+          <span id="cd-hours" class="countdown-value">00</span>
+          <span class="countdown-label">ঘণ্টা</span>
+        </div>
+        <div class="countdown-unit">
+          <span id="cd-minutes" class="countdown-value">00</span>
+          <span class="countdown-label">মিনিট</span>
+        </div>
+        <div class="countdown-unit">
+          <span id="cd-seconds" class="countdown-value">00</span>
+          <span class="countdown-label">সেকেন্ড</span>
+        </div>
+      </div>
+
+      <div class="progress-wrap">
+        <p id="progress-label" class="progress-label">মায়ের আগমনের অপেক্ষা</p>
+        <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <div id="progress-bar-fill" class="progress-fill"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="timeline-section" aria-labelledby="timeline-heading">
+      <h2 id="timeline-heading" class="section-heading">পূজার দিনপঞ্জি</h2>
+      <ol id="puja-timeline" class="puja-timeline"></ol>
+    </section>
+
+    <section class="diya-section" aria-labelledby="diya-heading">
+      <h2 id="diya-heading" class="sr-only">প্রদীপ জ্বালান</h2>
+      <button id="interactive-diya" class="diya" type="button" aria-label="প্রদীপ জ্বালাতে চাপ দিন">
+        <svg viewBox="0 0 100 100" class="diya-svg" aria-hidden="true">
+          <ellipse cx="50" cy="72" rx="36" ry="12" fill="#8a5a2b" />
+          <path d="M14 68 Q50 92 86 68 Q78 78 50 80 Q22 78 14 68 Z" fill="#a8703c" />
+          <path class="diya-flame" d="M50 30 Q42 48 50 58 Q58 48 50 30 Z" fill="#ffb347" />
+        </svg>
+        <span class="diya-hint">স্পর্শ করুন</span>
+      </button>
+    </section>
+
+    <section class="controls-section" aria-labelledby="controls-heading">
+      <h2 id="controls-heading" class="sr-only">নিয়ন্ত্রণ</h2>
+      <div class="controls">
+        <button id="music-toggle" class="control-btn" type="button" aria-pressed="false">
+          🔈 সঙ্গীত চালু করুন
+        </button>
+        <!-- Only shown when the active festival has more than one track
+             (e.g. Durga Puja's three songs) — app.js toggles [hidden]. -->
+        <button id="next-track-btn" class="control-btn" type="button" hidden>
+          ⏭️ পরের গান
+        </button>
+        <label class="volume-label" for="volume-slider">
+          ভলিউম
+          <input id="volume-slider" type="range" min="0" max="1" step="0.05" value="0.6" />
+        </label>
+        <button id="puja-mode-toggle" class="control-btn" type="button" aria-pressed="false">
+          ✨ পূজা মোড
+        </button>
+        <button id="share-btn" class="control-btn" type="button">
+          🔗 শেয়ার করুন
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>নির্মিত ভালোবাসা দিয়ে, বাংলার উৎসবের জন্য।</p>
+  </footer>
+
+  <audio id="festival-audio" loop preload="none"></audio>
+
+  <script src="js/festivals.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/countdown.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/effects.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

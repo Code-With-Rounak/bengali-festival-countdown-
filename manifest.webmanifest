@@ -1,0 +1,17 @@
+{
+  "name": "Bengali Festival Countdown",
+  "short_name": "\u09aa\u09c2\u099c\u09be \u0995\u09be\u0989\u09a8\u09cd\u099f\u09a1\u09be\u0989\u09a8",
+  "description": "\u09a6\u09c1\u09b0\u09cd\u0997\u09be\u09aa\u09c2\u099c\u09be, \u09b2\u0995\u09cd\u09b7\u09cd\u09ae\u09c0\u09aa\u09c2\u099c\u09be \u0993 \u0995\u09be\u09b2\u09c0\u09aa\u09c2\u099c\u09be\u09b0 \u099c\u09a8\u09cd\u09af \u098f\u0995\u099f\u09bf \u0995\u09be\u0989\u09a8\u09cd\u099f\u09a1\u09be\u0989\u09a8\u0964",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#1a0f0f",
+  "theme_color": "#7a1f2b",
+  "lang": "bn",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
